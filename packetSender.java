@@ -1,7 +1,5 @@
 import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -27,7 +25,7 @@ public class packetSender extends Thread {
     }
 
     public void run() {
-        System.out.println("Thread " + seq + " Started");
+        //System.out.println("Thread " + seq + " Started");
 
         try {
 
@@ -41,7 +39,7 @@ public class packetSender extends Thread {
                                                         this.addr, this.port);
 
             this.socket.send(sendPacket);
-            System.out.println("Packet " + this.seq + " sent");
+            // System.out.println("Packet " + this.seq + " sent");
 
         } catch (Exception e){
             e.printStackTrace();

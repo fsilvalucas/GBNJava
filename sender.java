@@ -13,10 +13,9 @@ public class sender {
 
     private int port;
     private InetAddress address;
-    private byte[] buf;
     private DatagramSocket socket;
     private int window = 3;
-    private int n_packages = 100;
+    private int n_packages = 10;
     private List<Integer> seqs = new ArrayList<>();
 
     public sender(DatagramSocket Socket, InetAddress addres, int port) throws SocketException {
@@ -27,7 +26,7 @@ public class sender {
         socket.setSoTimeout(100);
     }
 
-    public void GBN2(String message) throws IOException, ClassNotFoundException {
+    public void GBN2(String message, boolean order) throws IOException, ClassNotFoundException {
 
         int base = 0; // When base becomes equal to n_packages, all packets were sent.
         int tail = this.window - 1;
@@ -42,10 +41,12 @@ public class sender {
                         this.port);
 
                 ps.start();
-                try {
-                    Thread.sleep(80); // 0.08 sec
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                if (order){
+                    try {
+                        Thread.sleep(80); // 0.08 sec
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 head++;
@@ -66,7 +67,7 @@ public class sender {
                     this.seqs.add(seq);
                 }
             } catch (SocketTimeoutException e) {
-                e.printStackTrace();
+                // e.printStackTrace();
                 //int max = Collections.max(seqs);
                 int max = seqs.get(seqs.size() - 1);
                 if (max == base - 1){
@@ -86,7 +87,12 @@ public class sender {
     }
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
+        boolean order = false; 
+        // the boolean order is to test the order of the packet;
+        // The order is control by Thread execution;
+        // So controls the order of threads, so it can be sent in order or not!
+
         sender p = new sender(new DatagramSocket(), InetAddress.getByName("localhost"), 9876);
-        p.GBN2("oi");
+        p.GBN2("oi", order);
     }
 }
